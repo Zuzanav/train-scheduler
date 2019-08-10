@@ -1,0 +1,73 @@
+body {
+    /*background-color: #363940; */
+    background-color: black;
+}
+
+#container.card {
+    background-color: black;
+}
+
+.card {
+    background-color: black;
+}
+
+.jumbotron {
+    margin-right: 100px;
+    margin-left: 100px;
+    margin-top: 50px;
+    font-family: 'Audiowide', cursive;
+}
+
+
+#table-title {
+    font-family: 'Anton', sans-serif;
+    font-style: normal;
+}
+
+th {
+    font-family: 'Anton', sans-serif;
+    font-style: normal;
+    color: lightblue;
+}
+
+td {
+    font-family: 'Anton', sans-serif;
+    
+}
+
+.form-group {
+    font-family: 'Anton', sans-serif;
+}
+
+#container {
+    margin-right: 100px;
+    margin-left: 100px;
+}
+
+#ship-input {
+    background-color: black;
+    color: white;
+}
+
+#destination-input {
+    background-color: black;
+    color: white;
+}
+
+#time-input {
+    background-color: black;
+    color: white;
+}
+
+#freq-input {
+    background-color: black;
+    color: white;
+}
+
+#submit-button {
+    font-family: 'Anton', sans-serif;
+}
+
+label {
+    color: lightblue;
+}
