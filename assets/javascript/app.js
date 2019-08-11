@@ -23,73 +23,71 @@ var destination = "";
 var time = 0;
 var frequency = 0;
 
-//------------------------------------------------------------------------------------
-function populateTable() {
-    database.ref().on("value", function(snapshot) {
-        console.log("snapshot val: " + snapshot.val())
+//=====================================================================================================
+
+// RETREIVE CURRENT DATA FROM FIREBASE ----------------------------------------------
+
+database.ref().on("child_added", function(snapshot) { 
+        //console.log("SNAPSHOT: " + snapshot.key);
+
+    // RETRIEVE TIME AND FREQUENCY VARIABLES ----------------------------------------    
+    var time = snapshot.val().time;
+    var frequency = snapshot.val().frequency;
+
+        // console.log("TIME: " + time);
+        // console.log("FREQUENCY: " + frequency);
 
 
-    for (let index = 0; index < array.length; index++) {
-        const element = array[index];
-        
-        // First Ship Time
-        var shipTimeConverted = moment (time, "HH:mm").subtract(1, "years");
-        console.log("FORMATTED TIME: " + moment (time, "HH:mm"))
-        console.log("CONVERTED TIME: " + shipTimeConverted);
+    // MOMENT.JS TIME CONVERSIONS --------------------------------------------------
     
-        // difference between times
-        var diffTime = moment().diff(moment(shipTimeConverted), "minutes");
-        console.log("diff time: " + diffTime);
+    // First Ship Time
+    var shipTimeConverted = moment (time, "HH:mm").subtract(1, "years");
+        //console.log("FORMATTED TIME: " + moment (time, "HH:mm"))
+        // console.log("CONVERTED TIME: " + shipTimeConverted);
     
-        // Time apart 
-        var remainder = diffTime % frequency;
-        console.log("remainder: " + remainder);
+    // difference between times
+    var diffTime = moment().diff(moment(shipTimeConverted), "minutes");
+        // console.log("diff time: " + diffTime);
     
-        // MINUTES UNTIL NEXT SHIP
-        var minutesTillShip = frequency - remainder;
-        console.log("Minutes til next ship: " + minutesTillShip);
+    // Time apart 
+    var remainder = diffTime % frequency;
+        // console.log("remainder: " + remainder);
     
-        // ARRIVAL DATE 
-        var arrival_date = moment().add(minutesTillShip, "minutes").format('LLLL');
-        console.log("Arrival Time: " + moment(arrival_date).format('LLLL'));
+    // MINUTES UNTIL NEXT SHIP
+    var minutesTillShip = frequency - remainder;
+        // console.log("Minutes til next ship: " + minutesTillShip);
+    
+    // ARRIVAL DATE 
+    var arrival_date = moment().add(minutesTillShip, "minutes").format('LLLL');
+        // console.log("Arrival Time: " + moment(arrival_date).format('LLLL'));
+ 
 
-        // RETRIEVE AND DISPLAY DATA FROM FIREBASE ====================================================
-        // ---------------------------------------------------------------------------------
+    // APPEND DATA TO TABLE ----------------------------------------------------------
 
-        database.ref().on("child_added", function(childSnapshot) {
-            $("#full-list").append("<tr class='well'><td> " 
-                        + childSnapshot.val().ship +  
-            " </td><td>" + childSnapshot.val().destination +
-            " </td><td>" + childSnapshot.val().frequency + 
-            " </td><td>" + arrival_date + // ARRIVAL DATE
-            " </td><td>" + minutesTillShip + // MINUTES UNTIL NEXT SHIP
-            " </td></tr>");
-
-        }); // END OF childSnapshot FUNCTION
-
-
-        database.ref().on("child_added", function(snapshot){
-            $("#ship-col").text(snapshot.val().ship);
-            $("#dest-col").text(snapshot.val().destination);
-            $("#freq-col").text(snapshot.val().frequency);
-            $("#arrival-col").text(minutesTillShip);
-            $("#mins-away-col").text(snapshot.val().time);
-        }); // END OF SNAPSHOT FUNCTION
-        //---------------------------------------------------------------------------------
-
-    }; // END OF FOR LOOP
-
-}); // END OF "POPULATE-TABLE" FUNCTION
-}
-
-//-------------------------------------------------------------------------------------------
-//-------------------------------------------------------------------------------------------
+    $("#full-list").append("<tr class='well'><td> " 
+                + snapshot.val().ship +  
+    " </td><td>" + snapshot.val().destination +
+    " </td><td>" + snapshot.val().frequency + 
+    " </td><td>" + arrival_date + // ARRIVAL DATE
+    " </td><td>" + minutesTillShip + // MINUTES UNTIL NEXT SHIP
+    " </td></tr>");
 
 
-// ON CLICK EVENT ==============================================================================
-// Submit Button Click Event ----------------------------------------------------------------
+        // database.ref().on("child_added", function(snapshot){
+        //     $("#ship-col").text(snapshot.val().ship);
+        //     $("#dest-col").text(snapshot.val().destination);
+        //     $("#freq-col").text(snapshot.val().frequency);
+        //     $("#arrival-col").text(minutesTillShip);
+        //     $("#mins-away-col").text(snapshot.val().time);
+        // }); // END OF SNAPSHOT FUNCTION
+}); 
 
-$("#submit-button").on("click", function(event, ship) {
+//=====================================================================================================
+
+// ON CLICK EVENT - Submit Button Click Event ------------------------------------------
+
+$("#submit-button").on("click", function(event) {
+   
     // prevent the page from refreshing on submit
     event.preventDefault();
 
@@ -99,6 +97,7 @@ $("#submit-button").on("click", function(event, ship) {
     time = $("#time-input").val().trim();
     frequency = $("#freq-input").val().trim();
 
+
     // push the input-data to Firebase
     database.ref().push({
         ship: ship,
@@ -107,8 +106,8 @@ $("#submit-button").on("click", function(event, ship) {
         frequency: frequency
         });
 
-    // RUN FUNCTION "POPULATE-TABLE" TO CALCULATE TIMES AND ADD TO SCHEDULE TABLE
-    populateTable();
+    $("form")[0].reset(); 
+
 
 }); // END OF ON CLICK FUNCTION
 
